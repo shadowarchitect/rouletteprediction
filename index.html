@@ -560,14 +560,10 @@ body {
 <script>
 // ========== MOBILE-FRIENDLY PASSWORD SYSTEM ==========
 const PASSWORDS = {
-  "ROULETTE1": { used: false, deviceId: null },
+  "ROULETTE777": { used: false, deviceId: null },
   "AI2024": { used: false, deviceId: null },
   "PREDICT123": { used: false, deviceId: null },
   "VIPACCESS": { used: false, deviceId: null }
-  "TEST1": { used: false, deviceId: null }
-  "TEST2": { used: false, deviceId: null }
-  "TEST3": { used: false, deviceId: null }
-  "TEST4": { used: false, deviceId: null }
 };
 
 let deviceId = getDeviceId();
@@ -604,7 +600,7 @@ function checkPassword() {
     return;
   }
   
-  // Check password
+  // Check if password exists and is valid
   if (PASSWORDS[input]) {
     const passwordData = PASSWORDS[input];
     
@@ -643,7 +639,7 @@ function checkPassword() {
     }, 1000);
     
   } else {
-    // Wrong password
+    // Wrong password - INI YANG BENAR
     failedAttempts++;
     
     if (failedAttempts >= MAX_ATTEMPTS) {
@@ -722,7 +718,7 @@ function checkAutoLogin() {
   
   if (hasAccess === 'true' && accessPassword && PASSWORDS[accessPassword]) {
     // Check if password still valid for this device
-    if (PASSWORDS[accessPassword].deviceId === deviceId) {
+    if (PASSWORDS[accessPassword] && PASSWORDS[accessPassword].deviceId === deviceId) {
       // Auto login
       document.getElementById("password-screen").classList.add("hidden");
       document.getElementById("main-content").classList.remove("hidden");
@@ -1356,6 +1352,7 @@ window.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
+
 
 
 

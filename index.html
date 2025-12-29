@@ -99,207 +99,8 @@
   ]
 }
 </script>
-
-<style>
-/* ========== PASSWORD SCREEN STYLES ========== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.password-wrapper {
-  width: 100%;
-  max-width: 450px;
-}
-
-.password-container {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 40px 30px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.password-container::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(0, 124, 186, 0.1), transparent);
-  animation: shine 3s infinite linear;
-}
-
-@keyframes shine {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.logo {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.logo h1 {
-  color: #007cba;
-  font-size: 32px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.logo p {
-  color: #666;
-  font-size: 16px;
-  opacity: 0.8;
-}
-
-.password-form {
-  margin: 30px 0;
-}
-
-.input-group {
-  position: relative;
-  margin-bottom: 25px;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 18px 20px;
-  font-size: 18px;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  background: white;
-  transition: all 0.3s;
-  letter-spacing: 2px;
-}
-
-.input-group input:focus {
-  outline: none;
-  border-color: #007cba;
-  box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
-}
-
-.input-group label {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: white;
-  padding: 0 10px;
-  color: #999;
-  transition: all 0.3s;
-  pointer-events: none;
-}
-
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label {
-  top: 0;
-  font-size: 14px;
-  color: #007cba;
-}
-
-.password-btn {
-  width: 100%;
-  padding: 18px;
-  background: linear-gradient(135deg, #007cba, #005a87);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.password-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 124, 186, 0.3);
-}
-
-.password-btn:active {
-  transform: translateY(0);
-}
-
-.password-btn i {
-  font-size: 20px;
-}
-
-.error-message {
-  background: #ffebee;
-  color: #d32f2f;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
-  display: none;
-  align-items: center;
-  gap: 10px;
-  animation: fadeIn 0.3s;
-}
-
-.success-message {
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
-  display: none;
-  align-items: center;
-  gap: 10px;
-  animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.footer-note {
-  text-align: center;
-  margin-top: 30px;
-  color: #666;
-  font-size: 14px;
-  border-top: 1px solid #eee;
-  padding-top: 20px;
-}
-
-.hidden {
-  display: none;
-}
-
-/* Shake animation */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-
-.shake {
-  animation: shake 0.5s;
-}
-
-/* ========== RESET & BASE ========== */
+  
+  <style>
     .dashboard-wrapper {
       max-width: 500px;
       margin: auto;
@@ -489,308 +290,31 @@ body {
   </style>
 </head>
 <body>
+<div class="dashboard-wrapper">
+  <h2 style="text-align: center; margin-bottom: 20px; font-size: 24px;">🎯 Roulette Analyzer PRO MAX</h2>
 
-<!-- ========== PASSWORD SCREEN ========== -->
-<div id="password-screen">
-  <div class="password-wrapper">
-    <div class="password-container">
-      <div class="logo">
-        <h1>🎯 AI Roulette Prediction</h1>
-        <p>Private Access • One Device Only</p>
-      </div>
-      
-      <div class="password-form">
-        <div class="input-group">
-          <input type="password" id="password-input" 
-                 placeholder=" " 
-                 onkeypress="if(event.key=='Enter') checkPassword()">
-          <label>🔑 Enter Access Password</label>
-        </div>
-        
-        <button onclick="checkPassword()" class="password-btn">
-          <span>🚀</span> Access Prediction Tool
-        </button>
-        
-        <div id="error-message" class="error-message">
-          <span>❌</span> <span id="error-text">Wrong password!</span>
-        </div>
-        
-        <div id="success-message" class="success-message">
-          <span>✅</span> <span id="success-text">Access granted!</span>
-        </div>
-      </div>
-      
-      <div class="footer-note">
-        <p>⚠️ Each password works on ONE device/IP only</p>
-        <p style="margin-top: 5px; font-size: 12px; opacity: 0.7;">
-          Contact admin for password: @yourtelegram
-        </p>
-      </div>
-    </div>
+  <textarea id="input-deadnum" rows="4" placeholder="Tempel histori hasil roulette...&#10;Contoh: 17 5 23 0 32 15 8 19...&#10;MASUKIN MINIMAL 150 DATA SEBELUM MAIN!!"></textarea>
+  
+  <div class="input-group">
+    <button onclick="analyzeDeadNumber()">Mulai Analisa</button>
+    <button onclick="resetAnalyzer()" class="reset">Hapus Data</button>
   </div>
-</div>
 
-<!-- ========== MAIN CONTENT (HIDDEN BY DEFAULT) ========== -->
-<div id="main-content" class="hidden">
-    <div class="dashboard-wrapper">
-    <h2 style="text-align: center; margin-bottom: 20px; font-size: 24px;">🎯 Roulette Sniper</h2>
+  <div class="input-group">
+    <input id="latest-input" type="text" placeholder="Masukkan hasil terbaru (0-36)" 
+           onkeypress="if(event.key === 'Enter') submitLatest()">
+    <button onclick="submitLatest()">Submit</button>
+  </div>
 
-    <textarea id="input-deadnum" rows="4" placeholder="Tempel histori hasil roulette...&#10;Contoh: 17 5 23 0 32 15 8 19...&#10;MASUKIN MINIMAL 150 DATA SEBELUM MAIN!!"></textarea>
-    
-    <div class="input-group">
-      <button onclick="analyzeDeadNumber()">Mulai Analisa</button>
-      <button onclick="resetAnalyzer()" class="reset">Hapus Data</button>
-    </div>
-
-    <div class="input-group">
-      <input id="latest-input" type="text" placeholder="Masukkan hasil terbaru (0-36)" 
-             onkeypress="if(event.key === 'Enter') submitLatest()">
-      <button onclick="submitLatest()">Submit</button>
-    </div>
-
-    <div class="summary" id="dashboard-output">
-      <div class="summary-box">
-        <h4>📊 Data Summary</h4>
-        <div>Input data untuk memulai analisis</div>
-      </div>
+  <div class="summary" id="dashboard-output">
+    <div class="summary-box">
+      <h4>📊 Data Summary</h4>
+      <div>Input data untuk memulai analisis</div>
     </div>
   </div>
 </div>
 
 <script>
-// ========== MOBILE-FRIENDLY PASSWORD SYSTEM ==========
-const PASSWORDS = {
-  "ROULETTE777": { used: false, deviceId: null },
-  "AI2024": { used: false, deviceId: null },
-  "PREDICT123": { used: false, deviceId: null },
-  "VIPACCESS": { used: false, deviceId: null }
-};
-
-let deviceId = getDeviceId();
-let failedAttempts = 0;
-const MAX_ATTEMPTS = 5;
-let lockUntil = 0;
-
-// Generate unique device ID
-function getDeviceId() {
-  let id = localStorage.getItem('device_id');
-  if (!id) {
-    id = 'device_' + Math.random().toString(36).substr(2, 9) + 
-         '_' + navigator.userAgent.length + 
-         '_' + screen.width + 'x' + screen.height;
-    try {
-      localStorage.setItem('device_id', id);
-    } catch(e) {
-      console.log("localStorage not available");
-    }
-  }
-  return id;
-}
-
-function checkPassword() {
-  const input = document.getElementById("password-input").value.trim().toUpperCase();
-  
-  // Clear any existing messages
-  hideAllMessages();
-  
-  // Check if locked
-  if (lockUntil > Date.now()) {
-    const remaining = Math.ceil((lockUntil - Date.now()) / 1000);
-    showError(`Too many attempts! Locked for ${remaining} seconds`);
-    return;
-  }
-  
-  // Check if password exists and is valid
-  if (PASSWORDS[input]) {
-    const passwordData = PASSWORDS[input];
-    
-    // Check if password already used on another device
-    if (passwordData.deviceId && passwordData.deviceId !== deviceId) {
-      showError("Password already used on another device!");
-      return;
-    }
-    
-    // Grant access
-    passwordData.deviceId = deviceId;
-    passwordData.used = true;
-    
-    // Save access in localStorage
-    try {
-      localStorage.setItem('access_granted', 'true');
-      localStorage.setItem('access_password', input);
-      localStorage.setItem('access_time', Date.now());
-    } catch(e) {
-      console.log("localStorage error");
-    }
-    
-    // Show success
-    showSuccess("Access granted! Redirecting...");
-    
-    // Hide input and redirect
-    document.getElementById("password-input").value = "";
-    
-    setTimeout(() => {
-      document.getElementById("password-screen").classList.add("hidden");
-      document.getElementById("main-content").classList.remove("hidden");
-      setTimeout(() => {
-        const inputField = document.getElementById("input-deadnum");
-        if(inputField) inputField.focus();
-      }, 100);
-    }, 1000);
-    
-  } else {
-    // Wrong password - INI YANG BENAR
-    failedAttempts++;
-    
-    if (failedAttempts >= MAX_ATTEMPTS) {
-      lockUntil = Date.now() + (5 * 60 * 1000); // Lock 5 minutes
-      showError(`Too many attempts! Locked for 5 minutes`);
-    } else {
-      showError(`Wrong password! ${MAX_ATTEMPTS - failedAttempts} attempts left`);
-    }
-    
-    // Shake effect
-    const inputField = document.getElementById("password-input");
-    inputField.classList.add("shake");
-    setTimeout(() => {
-      inputField.classList.remove("shake");
-    }, 500);
-    
-    inputField.value = "";
-    inputField.focus();
-  }
-}
-
-function showError(message) {
-  const errorMsg = document.getElementById("error-message");
-  const errorText = document.getElementById("error-text");
-  
-  if(errorText) {
-    errorText.textContent = message;
-  }
-  
-  if(errorMsg) {
-    errorMsg.style.display = "flex";
-    errorMsg.style.opacity = "0";
-    setTimeout(() => {
-      errorMsg.style.opacity = "1";
-    }, 10);
-  }
-}
-
-function showSuccess(message) {
-  const successMsg = document.getElementById("success-message");
-  const successText = document.getElementById("success-text");
-  
-  if(successText) {
-    successText.textContent = message;
-  }
-  
-  if(successMsg) {
-    successMsg.style.display = "flex";
-    successMsg.style.opacity = "0";
-    setTimeout(() => {
-      successMsg.style.opacity = "1";
-    }, 10);
-  }
-}
-
-function hideAllMessages() {
-  const errorMsg = document.getElementById("error-message");
-  const successMsg = document.getElementById("success-message");
-  
-  if(errorMsg) errorMsg.style.display = "none";
-  if(successMsg) successMsg.style.display = "none";
-}
-
-// Check if already has access
-function checkAutoLogin() {
-  let hasAccess, accessPassword, accessTime;
-  
-  try {
-    hasAccess = localStorage.getItem('access_granted');
-    accessPassword = localStorage.getItem('access_password');
-    accessTime = localStorage.getItem('access_time');
-  } catch(e) {
-    console.log("localStorage not available");
-    return false;
-  }
-  
-  if (hasAccess === 'true' && accessPassword && PASSWORDS[accessPassword]) {
-    // Check if password still valid for this device
-    if (PASSWORDS[accessPassword] && PASSWORDS[accessPassword].deviceId === deviceId) {
-      // Auto login
-      document.getElementById("password-screen").classList.add("hidden");
-      document.getElementById("main-content").classList.remove("hidden");
-      setTimeout(() => {
-        const inputField = document.getElementById("input-deadnum");
-        if(inputField) inputField.focus();
-      }, 100);
-      return true;
-    } else {
-      // Password used on another device
-      try {
-        localStorage.removeItem('access_granted');
-        localStorage.removeItem('access_password');
-      } catch(e) {
-        console.log("localStorage error");
-      }
-      showError("Password already used on another device!");
-    }
-  }
-  return false;
-}
-
-// Mobile-friendly initialization
-document.addEventListener('DOMContentLoaded', function() {
-  // Check auto-login first
-  checkAutoLogin();
-  
-  // Add fallback for mobile browsers
-  setTimeout(() => {
-    const passwordScreen = document.getElementById("password-screen");
-    if(passwordScreen && passwordScreen.classList.contains("hidden")) {
-      // Already logged in
-      return;
-    }
-    
-    // Ensure elements are visible on mobile
-    const input = document.getElementById("password-input");
-    if(input) {
-      input.style.opacity = "1";
-      input.style.visibility = "visible";
-    }
-  }, 500);
-});
-
-// Add mobile-specific event handlers
-function setupMobileHandlers() {
-  const inputField = document.getElementById("password-input");
-  if(inputField) {
-    // Handle Enter key
-    inputField.addEventListener('keypress', function(e) {
-      if(e.key === 'Enter') {
-        checkPassword();
-      }
-    });
-    
-    // Focus event for mobile
-    inputField.addEventListener('focus', function() {
-      setTimeout(() => {
-        window.scrollTo(0, 0); // Ensure content is visible
-      }, 100);
-    });
-  }
-}
-
-// Initialize after DOM loads
-if(document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupMobileHandlers);
-} else {
-  setupMobileHandlers();
-}
-
-// ========== ROULETTE ANALYZER CODE ==========
 let results = [];
 
 // Show notification
@@ -826,20 +350,27 @@ function submitLatest() {
   const val = parseInt(latestInput.value);
   
   if (!isNaN(val) && val >= 0 && val <= 36) {
+    // Tambah ke array results
     results.push(val);
     
+    // Update textarea history
     const historyTextarea = document.getElementById("input-deadnum");
     const currentHistory = historyTextarea.value.trim();
     
     if (currentHistory === '') {
+      // Jika textarea kosong
       historyTextarea.value = val;
     } else {
+      // Jika sudah ada data, tambah dengan spasi
       const cleanHistory = currentHistory.replace(/\s+$/, '');
       historyTextarea.value = cleanHistory + ' ' + val;
     }
     
+    // Clear input field dan fokus kembali
     latestInput.value = '';
     latestInput.focus();
+    
+    // Update dashboard
     renderDashboard();
     showNotification(`✅ Angka ${val} ditambahkan!`);
   } else {
@@ -851,7 +382,7 @@ function submitLatest() {
 
 function resetAnalyzer() {
   if (results.length === 0) {
-    showNotification('📭 Tidak ada data untuk dihapus', true);
+    showNotification('篓 Tidak ada data untuk dihapus', true);
     return;
   }
   
@@ -864,9 +395,10 @@ function resetAnalyzer() {
 }
 
 // IMPROVED NLP LOGICS
+
 function getColorNLP(merah, hitam, hijau, totalNonGreen) {
   const lines = [];
-  let warningLevel = 0;
+  let warningLevel = 0; // 0: normal, 1: warning, 2: strong warning
   
   if (totalNonGreen > 0) {
     const merahPct = Math.round((merah / totalNonGreen) * 100);
@@ -877,6 +409,7 @@ function getColorNLP(merah, hitam, hijau, totalNonGreen) {
     lines.push(`📊 Komposisi: Merah ${merahPct}%, Hitam ${hitamPct}%`);
     lines.push(`📈 Selisih: ${selisih} angka (${selisihPct}%)`);
     
+    // Better logic for color imbalance
     if (selisihPct >= 25) {
       lines.push(`🚨 ${merah > hitam ? '🔴 MERAH DOMINAN KUAT!' : '⚫ HITAM DOMINAN KUAT!'}`);
       warningLevel = 2;
@@ -889,6 +422,7 @@ function getColorNLP(merah, hitam, hijau, totalNonGreen) {
       lines.push(`⚖️ Data cukup seimbang`);
     }
     
+    // Green analysis
     if (hijau > 0) {
       const hijauPct = Math.round((hijau / (totalNonGreen + hijau)) * 100);
       lines.push(`🟢 Hijau: ${hijau} (${hijauPct}%)`);
@@ -898,7 +432,10 @@ function getColorNLP(merah, hitam, hijau, totalNonGreen) {
     }
   }
   
-  return { lines: lines, warningLevel: warningLevel };
+  return {
+    lines: lines,
+    warningLevel: warningLevel
+  };
 }
 
 function getParityNLP(ganjil, genap, total) {
@@ -914,6 +451,7 @@ function getParityNLP(ganjil, genap, total) {
     lines.push(`📊 Ganjil ${ganjilPct}%, Genap ${genapPct}%`);
     lines.push(`📈 Selisih: ${selisih} angka (${selisihPct}%)`);
     
+    // Improved parity logic
     if (selisihPct >= 20) {
       lines.push(`🚨 ${ganjil > genap ? '⚪ GANJIL DOMINAN KUAT!' : '⚫ GENAP DOMINAN KUAT!'}`);
       warningLevel = 2;
@@ -927,7 +465,10 @@ function getParityNLP(ganjil, genap, total) {
     }
   }
   
-  return { lines: lines, warningLevel: warningLevel };
+  return { 
+    lines: lines, 
+    warningLevel: warningLevel 
+  };
 }
 
 function getSizeNLP(besar, kecil, total) {
@@ -943,6 +484,7 @@ function getSizeNLP(besar, kecil, total) {
     lines.push(`📊 Besar ${besarPct}%, Kecil ${kecilPct}%`);
     lines.push(`📈 Selisih: ${selisih} angka (${selisihPct}%)`);
     
+    // Improved size logic
     if (selisihPct >= 20) {
       lines.push(`🚨 ${besar > kecil ? '🔺 BESAR DOMINAN KUAT!' : '🔻 KECIL DOMINAN KUAT!'}`);
       warningLevel = 2;
@@ -956,7 +498,10 @@ function getSizeNLP(besar, kecil, total) {
     }
   }
   
-  return { lines: lines, warningLevel: warningLevel };
+  return { 
+    lines: lines, 
+    warningLevel: warningLevel 
+  };
 }
 
 // KERETA (pola +3)
@@ -978,6 +523,7 @@ function getKeretaNLP(k1, k2, k3, totalKereta) {
     
     lines.push(`📈 Selisih terbesar: ${selisih} angka (${selisihPct}%)`);
     
+    // Improved kereta logic
     if (selisihPct >= 25) {
       lines.push(`🚨 KETIDAKSEIMBANGAN KERETA TINGGI!`);
       if (k1 === min) lines.push(`🚂 Kereta 1 (1,4,7,...) SANGAT TERLAMBAT`);
@@ -999,7 +545,10 @@ function getKeretaNLP(k1, k2, k3, totalKereta) {
     }
   }
   
-  return { lines: lines, warningLevel: warningLevel };
+  return { 
+    lines: lines, 
+    warningLevel: warningLevel 
+  };
 }
 
 // GERBONG (kelompok 12 angka)
@@ -1022,6 +571,7 @@ function getGerbongNLP(g1, g2, g3, totalGerbong) {
     
     lines.push(`📈 Selisih terbesar: ${selisih} angka (${selisihPct}%)`);
     
+    // Improved gerbong logic
     if (selisihPct >= 25) {
       lines.push(`🚨 KETIDAKSEIMBANGAN GERBONG TINGGI!`);
       if (g1 === min) lines.push(`📦 Gerbong 1 (1-12) SANGAT TERLAMBAT`);
@@ -1043,7 +593,10 @@ function getGerbongNLP(g1, g2, g3, totalGerbong) {
     }
   }
   
-  return { lines: lines, warningLevel: warningLevel };
+  return { 
+    lines: lines, 
+    warningLevel: warningLevel 
+  };
 }
 
 // Hot numbers - muncul 2x atau lebih dalam 20 spin
@@ -1065,60 +618,56 @@ function getHotNumbers() {
 
 // POWERFUL DEAD NUMBERS LOGIC - JACKPOT HUNTER
 function getDeadNumbers() {
+  const total = results.length;
+  if (total === 0) return { deadGroups: [], superDead: [] };
+
+  // 🔍 Track last appearance index (0-based position in array)
+  const lastSeen = {};
+  for (let i = 0; i < results.length; i++) {
+    lastSeen[results[i]] = i; // index where it appeared last
+  }
+
+  // 🔢 Compute dead streak for all 0–36
+  const deadStreaks = [];
+  for (let num = 0; num <= 36; num++) {
+    const last = lastSeen[num] !== undefined ? lastSeen[num] : -1; // -1 = never appeared
+    const streak = total - 1 - last; // how many spins it's been missing (0-indexed)
+    deadStreaks.push({ number: num, streak });
+  }
+
+  // 🧮 Define range intervals dynamically (only up to 200)
+  const ranges = [
+    { min: 80,  max: 99 },
+    { min: 100, max: 129 },
+    { min: 130, max: 160 },
+    { min: 161, max: 200 },
+    // Hanya sampai 200, angka >200 masuk super dead aja
+  ];
+
   const deadGroups = [];
   const superDead = [];
-  
-  // 1. Dead Numbers 80-99 spins
-  if (results.length >= 99) {
-    const last80to99 = results.slice(-99, -79);
-    const seen = new Set(last80to99);
-    const dead80to99 = [];
-    for (let i = 0; i <= 36; i++) if (!seen.has(i)) dead80to99.push(i);
-    if (dead80to99.length > 0) deadGroups.push({ range: "80-99 spins", numbers: dead80to99 });
-  }
-  
-  // 2. Dead Numbers 100-129 spins
-  if (results.length >= 129) {
-    const last100to129 = results.slice(-129, -99);
-    const seen = new Set(last100to129);
-    const dead100to129 = [];
-    for (let i = 0; i <= 36; i++) if (!seen.has(i)) dead100to129.push(i);
-    if (dead100to129.length > 0) deadGroups.push({ range: "100-129 spins", numbers: dead100to129 });
-  }
-  
-  // 3. Dead Numbers 130-160 spins
-  if (results.length >= 160) {
-    const last130to160 = results.slice(-160, -129);
-    const seen = new Set(last130to160);
-    const dead130to160 = [];
-    for (let i = 0; i <= 36; i++) if (!seen.has(i)) dead130to160.push(i);
-    if (dead130to160.length > 0) deadGroups.push({ range: "130-160 spins", numbers: dead130to160 });
-  }
-  
-  // 4. Dead Numbers 160-200 spins
-  if (results.length >= 200) {
-    const last160to200 = results.slice(-200, -159);
-    const seen = new Set(last160to200);
-    const dead160to200 = [];
-    for (let i = 0; i <= 36; i++) if (!seen.has(i)) dead160to200.push(i);
-    if (dead160to200.length > 0) deadGroups.push({ range: "160-200 spins", numbers: dead160to200 });
-  }
-  
-  // 5. SUPER DEAD: Angka yang udah >200 spin gak muncul
-  if (results.length >= 200) {
-    const lastAppearance = {};
-    for (let i = 0; i < results.length; i++) lastAppearance[results[i]] = i + 1;
-    
-    for (let i = 0; i <= 36; i++) {
-      const lastSeen = lastAppearance[i] || 0;
-      const spinsDead = results.length - lastSeen;
-      if (spinsDead > 200) superDead.push({ number: i, spins: spinsDead });
+
+  ranges.forEach(range => {
+    // 🔥 CUMULATIVE LOGIC: if streak >= min AND streak <= 200, show in this range
+    const numbers = deadStreaks
+      .filter(d => d.streak >= range.min && d.streak <= 200)
+      .map(d => d.number)
+      .sort((a, b) => a - b);
+
+    if (numbers.length > 0) {
+      deadGroups.push({ range: `${range.min}-${range.max} spins`, numbers });
     }
-    
-    superDead.sort((a, b) => b.spins - a.spins);
-  }
-  
-  return { deadGroups, superDead };
+  });
+
+  // SUPER DEAD: streak > 200 (includes all numbers >200, even 400+)
+  superDead.push(
+    ...deadStreaks
+      .filter(d => d.streak > 200)
+      .sort((a, b) => b.streak - a.streak) // longest first
+      .map(d => ({ number: d.number, spins: d.streak }))
+  );
+
+  return { deadGroups, superDead, deadStreaks };
 }
 
 function renderDashboard() {
@@ -1140,13 +689,17 @@ function renderDashboard() {
   let ganjil = 0, genap = 0;
   let besar = 0, kecil = 0;
   
-  let kereta1 = 0, kereta2 = 0, kereta3 = 0;
-  let gerbong1 = 0, gerbong2 = 0, gerbong3 = 0;
+  // Variabel dengan nama yang BENAR
+  let kereta1 = 0, kereta2 = 0, kereta3 = 0;  // KERETA (pola +3)
+  let gerbong1 = 0, gerbong2 = 0, gerbong3 = 0; // GERBONG (kelompok 12)
 
+  // Mapping yang BENAR
+  // KERETA (pola +3)
   const kereta1Nums = [1,4,7,10,13,16,19,22,25,28,31,34];
   const kereta2Nums = [2,5,8,11,14,17,20,23,26,29,32,35];
   const kereta3Nums = [3,6,9,12,15,18,21,24,27,30,33,36];
   
+  // GERBONG (kelompok 12 angka)
   const gerbong1Nums = [1,2,3,4,5,6,7,8,9,10,11,12];
   const gerbong2Nums = [13,14,15,16,17,18,19,20,21,22,23,24];
   const gerbong3Nums = [25,26,27,28,29,30,31,32,33,34,35,36];
@@ -1159,34 +712,44 @@ function renderDashboard() {
       if (n % 2 === 0) genap++; else ganjil++;
       if (n <= 18) kecil++; else besar++;
       
+      // KERETA (pola +3)
       if (kereta1Nums.includes(n)) kereta1++;
       else if (kereta2Nums.includes(n)) kereta2++;
       else if (kereta3Nums.includes(n)) kereta3++;
       
+      // GERBONG (kelompok 12 angka)
       if (gerbong1Nums.includes(n)) gerbong1++;
       else if (gerbong2Nums.includes(n)) gerbong2++;
       else if (gerbong3Nums.includes(n)) gerbong3++;
     }
   });
 
+  // Get numbers
   const hotNumbers = getHotNumbers();
   const deadInfo = getDeadNumbers();
 
+  // Generate NLP dengan fungsi yang BENAR
   const colorNLP = getColorNLP(merah, hitam, hijau, merah + hitam);
   const parityNLP = getParityNLP(ganjil, genap, ganjil + genap);
   const sizeNLP = getSizeNLP(besar, kecil, besar + kecil);
   const keretaNLP = getKeretaNLP(kereta1, kereta2, kereta3, kereta1 + kereta2 + kereta3);
   const gerbongNLP = getGerbongNLP(gerbong1, gerbong2, gerbong3, gerbong1 + gerbong2 + gerbong3);
 
+  // Helper function to get CSS class based on warning level
   function getWarningClass(level) {
     if (level === 2) return 'strong-warning';
     if (level === 1) return 'warning';
     return '';
   }
 
+  // Build dead numbers HTML
   let deadNumbersHTML = '';
   if (deadInfo.deadGroups.length === 0 && results.length < 80) {
-    deadNumbersHTML = `<div style="color: #666; font-style: italic;">Data kurang dari 80 spin. Masukkan minimal 80 data untuk analisis dead numbers.</div>`;
+    deadNumbersHTML = `
+      <div style="color: #666; font-style: italic;">
+        Data kurang dari 80 spin. Masukkan minimal 80 data untuk analisis dead numbers.
+      </div>
+    `;
   } else {
     deadInfo.deadGroups.forEach(group => {
       deadNumbersHTML += `
@@ -1202,6 +765,7 @@ function renderDashboard() {
       `;
     });
     
+    // SUPER DEAD section
     if (deadInfo.superDead.length > 0) {
       deadNumbersHTML += `
         <div class="super-dead-section">
@@ -1285,6 +849,7 @@ function renderDashboard() {
       </div>
     </div>
 
+    <!-- KERETA (pola +3) -->
     <div class="summary-box">
       <h4>🚂 Kereta</h4>
       <div class="stats-row">
@@ -1304,6 +869,7 @@ function renderDashboard() {
       </div>
     </div>
 
+    <!-- GERBONG (kelompok 12 angka) -->
     <div class="summary-box">
       <h4>🚃 Gerbong</h4>
       <div class="stats-row">
@@ -1340,22 +906,10 @@ function renderDashboard() {
   `;
 }
 
-// Initialize page
+// Auto-focus pada textarea saat page load
 window.addEventListener('DOMContentLoaded', () => {
-  // Check auto login first
-  if (!checkAutoLogin()) {
-    // If not auto logged in, focus on password input
-    document.getElementById("password-input").focus();
-  }
+  document.getElementById("input-deadnum").focus();
 });
 </script>
 </body>
-
 </html>
-
-
-
-
-
-
-

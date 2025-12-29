@@ -575,10 +575,15 @@ let lockUntil = 0;
 function getDeviceId() {
   let id = localStorage.getItem('device_id');
   if (!id) {
-    id = 'device_' + Math.random().toString(36).substr(2, 9) + 
-         '_' + navigator.userAgent.length + 
-         '_' + screen.width + 'x' + screen.height;
+    // Gunakan kombinasi yang lebih stabil
+    id = 'device_' + 
+         (navigator.userAgent.match(/Mobile/i) ? 'mobile_' : 'desktop_') +
+         (navigator.platform || 'unknown') + '_' +
+         (screen.width || '0') + 'x' + (screen.height || '0');
+    
+    // Simpan dengan key yang spesifik
     localStorage.setItem('device_id', id);
+    localStorage.setItem('device_id_backup', id); // backup
   }
   return id;
 }
@@ -1253,3 +1258,4 @@ window.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
+

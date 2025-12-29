@@ -560,10 +560,10 @@ body {
 <script>
 // ========== PASSWORD SYSTEM ==========
 const PASSWORDS = {
-    "ROULETTE777": { used: false, deviceId: null },
-    "AI2024": { used: false, deviceId: null },
-    "PREDICT123": { used: false, deviceId: null },
-    "VIPACCESS": { used: false, deviceId: null }
+  "ROULETTE777": { used: false, deviceId: null },
+  "AI2024": { used: false, deviceId: null },
+  "PREDICT123": { used: false, deviceId: null },
+  "VIPACCESS": { used: false, deviceId: null }
 };
 
 let deviceId = getDeviceId();
@@ -571,157 +571,124 @@ let failedAttempts = 0;
 const MAX_ATTEMPTS = 5;
 let lockUntil = 0;
 
-// Device ID yang lebih simple
+// Generate unique device ID
 function getDeviceId() {
-    let id = localStorage.getItem('device_id');
-    if (!id) {
-        id = 'dev_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-        localStorage.setItem('device_id', id);
-    }
-    return id;
+  let id = localStorage.getItem('device_id');
+  if (!id) {
+    id = 'device_' + Math.random().toString(36).substr(2, 9) + 
+         '_' + navigator.userAgent.length + 
+         '_' + screen.width + 'x' + screen.height;
+    localStorage.setItem('device_id', id);
+  }
+  return id;
 }
-
-// Event Listeners untuk mobile
-document.addEventListener('DOMContentLoaded', function() {
-    const passwordInput = document.getElementById("password-input");
-    const submitBtn = document.querySelector('button[onclick="checkPassword()"]');
-    
-    if (passwordInput) {
-        // Enter key untuk semua browser
-        passwordInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                checkPassword();
-            }
-        });
-        
-        // Focus otomatis di mobile
-        setTimeout(() => {
-            passwordInput.focus();
-        }, 500);
-    }
-    
-    if (submitBtn) {
-        // Tambah touch event untuk mobile
-        submitBtn.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            checkPassword();
-        });
-    }
-    
-    // Cek auto login
-    checkAutoLogin();
-});
 
 function checkPassword() {
-    console.log("checkPassword called - Mobile Debug");
+  const input = document.getElementById("password-input").value.trim().toUpperCase();
+  const errorMsg = document.getElementById("error-message");
+  const errorText = document.getElementById("error-text");
+  const successMsg = document.getElementById("success-message");
+  const successText = document.getElementById("success-text");
+  
+  // Check if locked
+  if (lockUntil > Date.now()) {
+    const remaining = Math.ceil((lockUntil - Date.now()) / 1000);
+    showError(`Too many attempts! Locked for ${remaining} seconds`);
+    return;
+  }
+  
+  // Check password
+  if (PASSWORDS[input]) {
+    const passwordData = PASSWORDS[input];
     
-    const input = document.getElementById("password-input");
-    const passwordValue = input.value.trim().toUpperCase();
-    
-    console.log("Input value:", passwordValue);
-    console.log("Device ID:", deviceId);
-    
-    // Reset UI
-    document.getElementById("success-message").style.display = "none";
-    document.getElementById("error-message").style.display = "none";
-    
-    // Check lock
-    if (lockUntil > Date.now()) {
-        const remaining = Math.ceil((lockUntil - Date.now()) / 1000);
-        showError(`Locked! Wait ${remaining}s`);
-        return;
+    // Check if password already used on another device
+    if (passwordData.deviceId && passwordData.deviceId !== deviceId) {
+      showError("Password already used on another device!");
+      return;
     }
     
-    // Check if password exists
-    if (PASSWORDS[passwordValue]) {
-        const pw = PASSWORDS[passwordValue];
-        
-        // Check device
-        if (pw.deviceId && pw.deviceId !== deviceId) {
-            showError("Already used on another device!");
-            return;
-        }
-        
-        // SUCCESS
-        pw.deviceId = deviceId;
-        pw.used = true;
-        
-        // Save access
-        localStorage.setItem('access_granted', 'true');
-        localStorage.setItem('access_password', passwordValue);
-        localStorage.setItem('access_time', Date.now().toString());
-        localStorage.setItem('device_id', deviceId); // Simpan lagi untuk pastikan
-        
-        console.log("Access granted for device:", deviceId);
-        
-        // Show success
-        document.getElementById("success-text").textContent = "Access granted! Redirecting...";
-        document.getElementById("success-message").style.display = "flex";
-        
-        // Clear input
-        input.value = "";
-        
-        // Redirect
-        setTimeout(() => {
-            window.location.href = "main.html"; // Ganti dengan halaman utama
-        }, 1000);
-        
+    // Grant access
+    passwordData.deviceId = deviceId;
+    passwordData.used = true;
+    
+    // Save access in localStorage
+    localStorage.setItem('access_granted', 'true');
+    localStorage.setItem('access_password', input);
+    localStorage.setItem('access_time', Date.now());
+    
+    // Show success
+    successText.textContent = "Access granted! Redirecting...";
+    successMsg.style.display = "flex";
+    errorMsg.style.display = "none";
+    
+    // Hide input
+    document.getElementById("password-input").value = "";
+    
+    // Redirect after 1 second
+    setTimeout(() => {
+      document.getElementById("password-screen").classList.add("hidden");
+      document.getElementById("main-content").classList.remove("hidden");
+      // Focus pada textarea setelah login
+      setTimeout(() => {
+        document.getElementById("input-deadnum").focus();
+      }, 100);
+    }, 1000);
+    
+  } else {
+    // Wrong password
+    failedAttempts++;
+    
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      lockUntil = Date.now() + (5 * 60 * 1000); // Lock 5 minutes
+      showError(`Too many attempts! Locked for 5 minutes`);
     } else {
-        // WRONG PASSWORD
-        failedAttempts++;
-        console.log("Wrong password. Attempt:", failedAttempts);
-        
-        if (failedAttempts >= MAX_ATTEMPTS) {
-            lockUntil = Date.now() + (5 * 60 * 1000); // 5 menit
-            showError("Too many attempts! Locked for 5 minutes");
-        } else {
-            showError(`Wrong! ${MAX_ATTEMPTS - failedAttempts} attempts left`);
-        }
-        
-        // Shake effect
-        input.classList.add("shake");
-        setTimeout(() => {
-            input.classList.remove("shake");
-            input.value = "";
-            input.focus();
-        }, 500);
+      showError(`Wrong password! ${MAX_ATTEMPTS - failedAttempts} attempts left`);
     }
-}
-
-function showError(msg) {
-    const errorEl = document.getElementById("error-text");
-    const errorBox = document.getElementById("error-message");
     
-    if (errorEl && errorBox) {
-        errorEl.textContent = msg;
-        errorBox.style.display = "flex";
-        console.log("Error shown:", msg);
-    }
+    // Shake effect
+    document.getElementById("password-input").classList.add("shake");
+    setTimeout(() => {
+      document.getElementById("password-input").classList.remove("shake");
+    }, 500);
+    
+    document.getElementById("password-input").value = "";
+    document.getElementById("password-input").focus();
+  }
 }
 
+function showError(message) {
+  const errorMsg = document.getElementById("error-message");
+  const errorText = document.getElementById("error-text");
+  
+  errorText.textContent = message;
+  errorMsg.style.display = "flex";
+  document.getElementById("success-message").style.display = "none";
+}
+
+// Check if already has access
 function checkAutoLogin() {
-    const hasAccess = localStorage.getItem('access_granted');
-    const savedPw = localStorage.getItem('access_password');
-    const savedDevice = localStorage.getItem('device_id');
-    
-    console.log("AutoLogin check:", { hasAccess, savedPw, savedDevice, deviceId });
-    
-    if (hasAccess === 'true' && savedPw && savedDevice === deviceId) {
-        if (PASSWORDS[savedPw] && PASSWORDS[savedPw].deviceId === deviceId) {
-            console.log("Auto login successful!");
-            // Auto redirect ke halaman utama
-            window.location.href = "main.html";
-            return true;
-        }
+  const hasAccess = localStorage.getItem('access_granted');
+  const accessPassword = localStorage.getItem('access_password');
+  const accessTime = localStorage.getItem('access_time');
+  
+  if (hasAccess === 'true' && accessPassword) {
+    // Check if password still valid for this device
+    if (PASSWORDS[accessPassword] && PASSWORDS[accessPassword].deviceId === deviceId) {
+      // Auto login
+      document.getElementById("password-screen").classList.add("hidden");
+      document.getElementById("main-content").classList.remove("hidden");
+      setTimeout(() => {
+        document.getElementById("input-deadnum").focus();
+      }, 100);
+      return true;
+    } else {
+      // Password used on another device
+      localStorage.removeItem('access_granted');
+      localStorage.removeItem('access_password');
+      showError("Password already used on another device!");
     }
-    return false;
-}
-
-// DEBUG FUNCTION
-function debugReset() {
-    localStorage.clear();
-    location.reload();
+  }
+  return false;
 }
 
 // ========== ROULETTE ANALYZER CODE ==========
@@ -1286,5 +1253,6 @@ window.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
+
 
 

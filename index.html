@@ -558,8 +558,7 @@ body {
 </div>
 
 <script>
-// ========== PASSWORD SYSTEM ==========
-// ========== PASSWORD SYSTEM ==========
+// ========== MOBILE-FRIENDLY PASSWORD SYSTEM ==========
 const PASSWORDS = {
   "ROULETTE777": { used: false, deviceId: null },
   "AI2024": { used: false, deviceId: null },
@@ -579,25 +578,20 @@ function getDeviceId() {
     id = 'device_' + Math.random().toString(36).substr(2, 9) + 
          '_' + navigator.userAgent.length + 
          '_' + screen.width + 'x' + screen.height;
-    localStorage.setItem('device_id', id);
+    try {
+      localStorage.setItem('device_id', id);
+    } catch(e) {
+      console.log("localStorage not available");
+    }
   }
   return id;
 }
 
 function checkPassword() {
   const input = document.getElementById("password-input").value.trim().toUpperCase();
-  const errorMsg = document.getElementById("error-message");
-  const errorText = document.getElementById("error-text");
-  const successMsg = document.getElementById("success-message");
-  const successText = document.getElementById("success-text");
   
-  // Clear previous notifications
-  errorMsg.style.display = "none";
-  successMsg.style.display = "none";
-  
-  // Force reflow to ensure display updates on mobile
-  void errorMsg.offsetWidth;
-  void successMsg.offsetWidth;
+  // Clear any existing messages
+  hideAllMessages();
   
   // Check if locked
   if (lockUntil > Date.now()) {
@@ -621,34 +615,26 @@ function checkPassword() {
     passwordData.used = true;
     
     // Save access in localStorage
-    localStorage.setItem('access_granted', 'true');
-    localStorage.setItem('access_password', input);
-    localStorage.setItem('access_time', Date.now());
-    
-    // Show success with mobile-friendly approach
-    successText.textContent = "Access granted! Redirecting...";
-    successMsg.style.display = "flex";
-    errorMsg.style.display = "none";
-    
-    // Force mobile browsers to show the message
-    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-      // Mobile device - ensure visibility
-      successMsg.style.opacity = "0";
-      setTimeout(() => {
-        successMsg.style.opacity = "1";
-      }, 10);
+    try {
+      localStorage.setItem('access_granted', 'true');
+      localStorage.setItem('access_password', input);
+      localStorage.setItem('access_time', Date.now());
+    } catch(e) {
+      console.log("localStorage error");
     }
     
-    // Hide input
+    // Show success
+    showSuccess("Access granted! Redirecting...");
+    
+    // Hide input and redirect
     document.getElementById("password-input").value = "";
     
-    // Redirect after 1 second
     setTimeout(() => {
       document.getElementById("password-screen").classList.add("hidden");
       document.getElementById("main-content").classList.remove("hidden");
-      // Focus pada textarea setelah login
       setTimeout(() => {
-        document.getElementById("input-deadnum").focus();
+        const inputField = document.getElementById("input-deadnum");
+        if(inputField) inputField.focus();
       }, 100);
     }, 1000);
     
@@ -663,7 +649,7 @@ function checkPassword() {
       showError(`Wrong password! ${MAX_ATTEMPTS - failedAttempts} attempts left`);
     }
     
-    // Mobile-friendly shake effect
+    // Shake effect
     const inputField = document.getElementById("password-input");
     inputField.classList.add("shake");
     setTimeout(() => {
@@ -672,14 +658,6 @@ function checkPassword() {
     
     inputField.value = "";
     inputField.focus();
-    
-    // Force mobile browsers to show error
-    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-      errorMsg.style.opacity = "0";
-      setTimeout(() => {
-        errorMsg.style.opacity = "1";
-      }, 10);
-    }
   }
 }
 
@@ -687,12 +665,12 @@ function showError(message) {
   const errorMsg = document.getElementById("error-message");
   const errorText = document.getElementById("error-text");
   
-  errorText.textContent = message;
-  errorMsg.style.display = "flex";
-  document.getElementById("success-message").style.display = "none";
+  if(errorText) {
+    errorText.textContent = message;
+  }
   
-  // Mobile browser compatibility fix
-  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+  if(errorMsg) {
+    errorMsg.style.display = "flex";
     errorMsg.style.opacity = "0";
     setTimeout(() => {
       errorMsg.style.opacity = "1";
@@ -700,53 +678,117 @@ function showError(message) {
   }
 }
 
+function showSuccess(message) {
+  const successMsg = document.getElementById("success-message");
+  const successText = document.getElementById("success-text");
+  
+  if(successText) {
+    successText.textContent = message;
+  }
+  
+  if(successMsg) {
+    successMsg.style.display = "flex";
+    successMsg.style.opacity = "0";
+    setTimeout(() => {
+      successMsg.style.opacity = "1";
+    }, 10);
+  }
+}
+
+function hideAllMessages() {
+  const errorMsg = document.getElementById("error-message");
+  const successMsg = document.getElementById("success-message");
+  
+  if(errorMsg) errorMsg.style.display = "none";
+  if(successMsg) successMsg.style.display = "none";
+}
+
 // Check if already has access
 function checkAutoLogin() {
-  const hasAccess = localStorage.getItem('access_granted');
-  const accessPassword = localStorage.getItem('access_password');
-  const accessTime = localStorage.getItem('access_time');
+  let hasAccess, accessPassword, accessTime;
   
-  if (hasAccess === 'true' && accessPassword) {
+  try {
+    hasAccess = localStorage.getItem('access_granted');
+    accessPassword = localStorage.getItem('access_password');
+    accessTime = localStorage.getItem('access_time');
+  } catch(e) {
+    console.log("localStorage not available");
+    return false;
+  }
+  
+  if (hasAccess === 'true' && accessPassword && PASSWORDS[accessPassword]) {
     // Check if password still valid for this device
-    if (PASWORDS[accessPassword] && PASSWORDS[accessPassword].deviceId === deviceId) {
+    if (PASSWORDS[accessPassword].deviceId === deviceId) {
       // Auto login
       document.getElementById("password-screen").classList.add("hidden");
       document.getElementById("main-content").classList.remove("hidden");
       setTimeout(() => {
-        document.getElementById("input-deadnum").focus();
+        const inputField = document.getElementById("input-deadnum");
+        if(inputField) inputField.focus();
       }, 100);
       return true;
     } else {
       // Password used on another device
-      localStorage.removeItem('access_granted');
-      localStorage.removeItem('access_password');
+      try {
+        localStorage.removeItem('access_granted');
+        localStorage.removeItem('access_password');
+      } catch(e) {
+        console.log("localStorage error");
+      }
       showError("Password already used on another device!");
     }
   }
   return false;
 }
 
-// Mobile optimization: Ensure notifications are visible
+// Mobile-friendly initialization
 document.addEventListener('DOMContentLoaded', function() {
-  // Add mobile-specific CSS if needed
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // Check auto-login first
+  checkAutoLogin();
   
-  if (isMobile) {
-    // Add mobile-specific styles to ensure visibility
-    const style = document.createElement('style');
-    style.textContent = `
-      #error-message, #success-message {
-        z-index: 9999 !important;
-        position: fixed !important;
-        top: 20% !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        max-width: 90% !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
+  // Add fallback for mobile browsers
+  setTimeout(() => {
+    const passwordScreen = document.getElementById("password-screen");
+    if(passwordScreen && passwordScreen.classList.contains("hidden")) {
+      // Already logged in
+      return;
+    }
+    
+    // Ensure elements are visible on mobile
+    const input = document.getElementById("password-input");
+    if(input) {
+      input.style.opacity = "1";
+      input.style.visibility = "visible";
+    }
+  }, 500);
 });
+
+// Add mobile-specific event handlers
+function setupMobileHandlers() {
+  const inputField = document.getElementById("password-input");
+  if(inputField) {
+    // Handle Enter key
+    inputField.addEventListener('keypress', function(e) {
+      if(e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+    
+    // Focus event for mobile
+    inputField.addEventListener('focus', function() {
+      setTimeout(() => {
+        window.scrollTo(0, 0); // Ensure content is visible
+      }, 100);
+    });
+  }
+}
+
+// Initialize after DOM loads
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupMobileHandlers);
+} else {
+  setupMobileHandlers();
+}
 
 // ========== ROULETTE ANALYZER CODE ==========
 let results = [];
@@ -1310,6 +1352,7 @@ window.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
+
 
 
 

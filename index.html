@@ -98,7 +98,7 @@
     }
   ]
 }
-</script>
+</script>  
   
   <style>
     .dashboard-wrapper {
@@ -670,6 +670,75 @@ function getDeadNumbers() {
   return { deadGroups, superDead, deadStreaks };
 }
 
+// ALERT SYSTEM - DETEKSI POLA EKSTREM REAL-TIME
+function getAlerts() {
+  const alerts = [];
+  const total = results.length;
+  if (total < 2) return alerts;
+
+  const red = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+  const black = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35];
+
+  // KERETA (pola +3)
+  const kereta1Nums = [1,4,7,10,13,16,19,22,25,28,31,34];
+  const kereta2Nums = [2,5,8,11,14,17,20,23,26,29,32,35];
+  const kereta3Nums = [3,6,9,12,15,18,21,24,27,30,33,36];
+
+  // GERBONG (kelompok 12 angka)
+  const gerbong1Nums = [1,2,3,4,5,6,7,8,9,10,11,12];
+  const gerbong2Nums = [13,14,15,16,17,18,19,20,21,22,23,24];
+  const gerbong3Nums = [25,26,27,28,29,30,31,32,33,34,35,36];
+
+  // Helper: count consecutive from the end
+  function countConsecutiveFromEnd(arr, matcher) {
+    let count = 0;
+    for (let i = arr.length - 1; i >= 0; i--) {
+      if (matcher(arr[i])) {
+        count++;
+      } else {
+        break; // stop at first non-match
+      }
+    }
+    return count;
+  }
+
+  // 🔴⚫ Warna berturut-turut
+  const redCount = countConsecutiveFromEnd(results, n => red.includes(n));
+  const blackCount = countConsecutiveFromEnd(results, n => black.includes(n));
+  if (redCount >= 9) alerts.push(`🚨 ${redCount}x Merah Berturut-turut!`);
+  if (blackCount >= 9) alerts.push(`🚨 ${blackCount}x Hitam Berturut-turut!`);
+
+  // ⚪⚫ Ganjil/Genap berturut-turut
+  const oddCount = countConsecutiveFromEnd(results, n => n !== 0 && n % 2 === 1);
+  const evenCount = countConsecutiveFromEnd(results, n => n !== 0 && n % 2 === 0);
+  if (oddCount >= 8) alerts.push(`🚨 ${oddCount}x Ganjil Berturut-turut!`);
+  if (evenCount >= 8) alerts.push(`🚨 ${evenCount}x Genap Berturut-turut!`);
+
+  // 🔺🔻 Besar/Kecil berturut-turut
+  const bigCount = countConsecutiveFromEnd(results, n => n > 18);
+  const smallCount = countConsecutiveFromEnd(results, n => n >= 1 && n <= 18);
+  if (bigCount >= 9) alerts.push(`🚨 ${bigCount}x Besar Berturut-turut!`);
+  if (smallCount >= 9) alerts.push(`🚨 ${smallCount}x Kecil Berturut-turut!`);
+
+  // 🚂 Kereta berturut-turut
+  const k1Count = countConsecutiveFromEnd(results, n => kereta1Nums.includes(n));
+  const k2Count = countConsecutiveFromEnd(results, n => kereta2Nums.includes(n));
+  const k3Count = countConsecutiveFromEnd(results, n => kereta3Nums.includes(n));
+  if (k1Count >= 4) alerts.push(`🚨 ${k1Count}x Kereta 1 (1,4,7...) Berturut-turut!`);
+  if (k2Count >= 4) alerts.push(`🚨 ${k2Count}x Kereta 2 (2,5,8...) Berturut-turut!`);
+  if (k3Count >= 4) alerts.push(`🚨 ${k3Count}x Kereta 3 (3,6,9...) Berturut-turut!`);
+
+  // 🚃 Gerbong berturut-turut
+  const g1Count = countConsecutiveFromEnd(results, n => gerbong1Nums.includes(n));
+  const g2Count = countConsecutiveFromEnd(results, n => gerbong2Nums.includes(n));
+  const g3Count = countConsecutiveFromEnd(results, n => gerbong3Nums.includes(n));
+  if (g1Count >= 4) alerts.push(`🚨 ${g1Count}x Gerbong 1 (1-12) Berturut-turut!`);
+  if (g2Count >= 4) alerts.push(`🚨 ${g2Count}x Gerbong 2 (13-24) Berturut-turut!`);
+  if (g3Count >= 4) alerts.push(`🚨 ${g3Count}x Gerbong 3 (25-36) Berturut-turut!`);
+
+  return alerts;
+}
+
 function renderDashboard() {
   const total = results.length;
   if (total === 0) {
@@ -727,6 +796,7 @@ function renderDashboard() {
   // Get numbers
   const hotNumbers = getHotNumbers();
   const deadInfo = getDeadNumbers();
+  const alerts = getAlerts();
 
   // Generate NLP dengan fungsi yang BENAR
   const colorNLP = getColorNLP(merah, hitam, hijau, merah + hitam);
@@ -741,6 +811,21 @@ function renderDashboard() {
     if (level === 1) return 'warning';
     return '';
   }
+
+  // Build alert HTML
+  const alertHTML = alerts.length > 0
+    ? `
+      <div class="summary-box" style="background: #fff3cd; border-color: #ffeaa7;">
+        <h4 style="color: #856404;">⚠️ ALERT SYSTEM - WASPADA!</h4>
+        <div style="color: #856404;">
+          ${alerts.map(alert => `<div style="margin-bottom: 8px;">${alert}</div>`).join('')}
+        </div>
+        <div style="font-size: 14px; margin-top: 10px; color: #666;">
+          ⚠️ Pattern ekstrem terdeteksi! Gunakan dengan hati-hati.
+        </div>
+      </div>
+    `
+    : '';
 
   // Build dead numbers HTML
   let deadNumbersHTML = '';
@@ -799,6 +884,8 @@ function renderDashboard() {
         <span><b>${results[results.length-1] || '-'}</b></span>
       </div>
     </div>
+
+    ${alertHTML}
 
     <div class="summary-box">
       <h4>🎨 Warna</h4>

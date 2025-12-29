@@ -559,6 +559,7 @@ body {
 
 <script>
 // ========== PASSWORD SYSTEM ==========
+// ========== PASSWORD SYSTEM ==========
 const PASSWORDS = {
   "ROULETTE777": { used: false, deviceId: null },
   "AI2024": { used: false, deviceId: null },
@@ -590,6 +591,14 @@ function checkPassword() {
   const successMsg = document.getElementById("success-message");
   const successText = document.getElementById("success-text");
   
+  // Clear previous notifications
+  errorMsg.style.display = "none";
+  successMsg.style.display = "none";
+  
+  // Force reflow to ensure display updates on mobile
+  void errorMsg.offsetWidth;
+  void successMsg.offsetWidth;
+  
   // Check if locked
   if (lockUntil > Date.now()) {
     const remaining = Math.ceil((lockUntil - Date.now()) / 1000);
@@ -616,10 +625,19 @@ function checkPassword() {
     localStorage.setItem('access_password', input);
     localStorage.setItem('access_time', Date.now());
     
-    // Show success
+    // Show success with mobile-friendly approach
     successText.textContent = "Access granted! Redirecting...";
     successMsg.style.display = "flex";
     errorMsg.style.display = "none";
+    
+    // Force mobile browsers to show the message
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      // Mobile device - ensure visibility
+      successMsg.style.opacity = "0";
+      setTimeout(() => {
+        successMsg.style.opacity = "1";
+      }, 10);
+    }
     
     // Hide input
     document.getElementById("password-input").value = "";
@@ -645,14 +663,23 @@ function checkPassword() {
       showError(`Wrong password! ${MAX_ATTEMPTS - failedAttempts} attempts left`);
     }
     
-    // Shake effect
-    document.getElementById("password-input").classList.add("shake");
+    // Mobile-friendly shake effect
+    const inputField = document.getElementById("password-input");
+    inputField.classList.add("shake");
     setTimeout(() => {
-      document.getElementById("password-input").classList.remove("shake");
+      inputField.classList.remove("shake");
     }, 500);
     
-    document.getElementById("password-input").value = "";
-    document.getElementById("password-input").focus();
+    inputField.value = "";
+    inputField.focus();
+    
+    // Force mobile browsers to show error
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      errorMsg.style.opacity = "0";
+      setTimeout(() => {
+        errorMsg.style.opacity = "1";
+      }, 10);
+    }
   }
 }
 
@@ -663,6 +690,14 @@ function showError(message) {
   errorText.textContent = message;
   errorMsg.style.display = "flex";
   document.getElementById("success-message").style.display = "none";
+  
+  // Mobile browser compatibility fix
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    errorMsg.style.opacity = "0";
+    setTimeout(() => {
+      errorMsg.style.opacity = "1";
+    }, 10);
+  }
 }
 
 // Check if already has access
@@ -673,7 +708,7 @@ function checkAutoLogin() {
   
   if (hasAccess === 'true' && accessPassword) {
     // Check if password still valid for this device
-    if (PASSWORDS[accessPassword] && PASSWORDS[accessPassword].deviceId === deviceId) {
+    if (PASWORDS[accessPassword] && PASSWORDS[accessPassword].deviceId === deviceId) {
       // Auto login
       document.getElementById("password-screen").classList.add("hidden");
       document.getElementById("main-content").classList.remove("hidden");
@@ -690,6 +725,28 @@ function checkAutoLogin() {
   }
   return false;
 }
+
+// Mobile optimization: Ensure notifications are visible
+document.addEventListener('DOMContentLoaded', function() {
+  // Add mobile-specific CSS if needed
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    // Add mobile-specific styles to ensure visibility
+    const style = document.createElement('style');
+    style.textContent = `
+      #error-message, #success-message {
+        z-index: 9999 !important;
+        position: fixed !important;
+        top: 20% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        max-width: 90% !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+});
 
 // ========== ROULETTE ANALYZER CODE ==========
 let results = [];
@@ -1253,6 +1310,7 @@ window.addEventListener('DOMContentLoaded', () => {
 </body>
 
 </html>
+
 
 
 
